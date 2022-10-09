@@ -1,0 +1,377 @@
+SQL Important Queries
+
+1.Write a query to display the employee id,
+ name ( first name and last name ) and the 
+job id column with a modified title SALESMAN
+for those employees whose job title is ST_MAN
+and DEVELOPER for whose job title is IT_PROG.
+
+==
+Select Employee_id,first_name,last_name.
+case job _id
+when "ST_MAN" then "Salesman"
+when "developer" then "IT_PROG"
+else job_id
+end as designation, salary
+from employee;
+
+24.Write a query to display the employee id, name ( first name and last name ), 
+salary and the SalaryStatus column with a title HIGH and LOW respectively for
+those employees whose salary is more than and less than the average salary of all employees.
+select employee_id,first_name,last_name,case
+
+when Salary>(Select avg(salary) from employees) as avg_salary then "High"
+else "Low"
+end as Salary_status
+from employees;
+
+
+25 ==
+Write a query to display the employee id, name ( first name and last name ), SalaryDrawn,
+AvgCompare (salary - the average salary of all employees) and the SalaryStatus column with
+a title HIGH and LOW respectively for those employees whose salary is more than and less 
+than the average salary of all employees  .
+
+select employee_id ,first_name,last_name,SalaryDrawn,case AvgSalary
+when (select avg(salary) from employess) as avg_salary as we hav
+
+
+finding the competitors like and then find whether these commpanies are in forward citation
+.
+EM Photogenics
+Zenotec Ltd
+PSSC Labs
+Falcon Consulting
+QuickSttream 
+Brick Simple LLC
+
+26 --
+select departement_name from department where department_id in(
+select department_id from employees group by department_id
+having count(department_id)>1);
+
+or
+select department_name from departments where department_id in
+(select distinct(department_id) from departments)
+
+27 ---
+select employee_name from employee where department_id in (
+(select departement id from departments where location id
+in 
+
+(select location_id from locations where country_id 
+in 
+(select ID from countries where country_name="United Kingdom")));
+
+
+28 ---
+select last_name from employees 
+where salary >
+(select avg(salary) from employees where department_id in
+(select department_id from departments where department_name="IT"));
+
+
+29--
+
+find the salary where last_name is ozer and compare the salaries of other p
+people
+select first_name,last_name,salary from employeess where
+salary> (select salary from employees where last_name="Ozer")
+order by last_name;
+
+30--
+select first_name,last_name from employees where department_id  in
+(select department_id from departments where location_id in 
+(select location_id from locations where country_id=="US"))
+
+Here very interesting insight is to find that we have to find only the managers who are 
+working in that particular location and people where we 
+reporting to this manager so we have to write this query 
+
+select first_name,last_name from employees where
+manager_id in (find the department_id subquery);
+
+
+31 --
+Find the employees whose salary exceeds 50% of their 
+departement salary 
+
+Approach.
+
+-- find  the sum of salary for each department
+select employee from employees where salary>se;
+we need both employee id as well as sum of salary 
+from the query
+
+select first_name,last_name from employee where
+department_id in
+(select departement_id from employee
+group by department_id) and salary>0.5*(select 
+sum(salary) from employee group by department_id);
+
+
+
+32 ---
+
+
+According to the given data if we have manager_id is 0 
+then it will have no managers
+select employee
+
+ From the following tables, write a SQL query to 
+find those employees who are managers. Return all
+ the fields of employees table
+
+As we can see that we have 2 coloums of our importance 
+one is manager_id and one is employee_id
+therefore we have to find
+all people common in manager_id and employee_id are
+people who are managers
+
+select * from employee where employee_id in
+(select manager_id from employee);
+
+33---
+select * from employee where employee_id in
+(select manager_id from departments);
+
+34 --
+
+here we have to find the maximum salary in a
+particular date and time
+
+so
+>> 
+select employee_id,first_name,lastname,salary,department_name,ci
+(select max(salary) from employees
+where hire_data between "2002-01-02" and "2003-12-31"));
+
+
+35 --
+
+select first_name,last_name,dept_id from departments
+where location_id in (select location_id from locations
+where city="London");
+
+36 ---
+
+
+37--
+
+select first_name,last_name,department_id from departments
+where salary> (select max(salary) from employees where department_id=40);
+
+38 --
+select department_id from departments
+where location_id in
+(select location_id from locations
+where departement_id=30);
+
+39--
+
+select first_name,last_name,salary,department_id 
+from employees
+where department_id in 
+(select department_id from employees
+where id =201);
+
+40 --
+select employee_id from employees
+where salary =
+(select salary from employees
+where department_id=40);
+
+41--
+select first_name,last_name,departemnt_id from employees
+where department_id in
+(select department_id from departments
+where department_name="Marketing");
+
+
+42 --
+ 
+Here we have to find min salary of a person grouping by 40
+select first_name,last_name,salary,departement_id from
+employees where salary>
+(select min(salary) from employees
+where departement_id=40);
+
+43 --
+select first_name ||" "|| lastt_name AS full_name,hire_date from employees 
+where hire_date>(select hire_date frm employees
+where employee_id=185);
+
+44--
+select first_name,last_name,salary,department_id from employees where
+where salary<
+(select min(salary) from employees where
+department_id =70);
+
+45 --
+ From the following table, write a SQL query to find 
+those employees who earn less than the average salary 
+and work at the department where Laura (first name) is
+ employed. Return first name, last name, salary, and 
+department ID
+
+select first_name,last_name,salary,departement_id from employees
+where
+departmeent_id=(select department_id from employees where 
+first_name="Laura")
+and salary<(select avg(salary) from employees);
+
+
+46 --
+
+find all the employees whose department is located in london.
+
+
+select first_name,last_name,salary,department_id from employees
+where department id in
+(select department_id from departments where 
+location_id in 
+(select location_id from locations where 
+city="London"));
+
+47 --
+selectc city from locations where departement_id=
+(select location_id from departments where department_id=
+(select department_id from employees 
+where employee_id =134))
+
+48 --
+find those departments whose salary>7000 and have completed atleast one or more jobs
+for salary>7000
+[select max(salary) from employees 
+group by department_id
+having max(salary)>7000)
+
+have worked atleast one or more jobs
+(select department_id from job_history
+group by employee_id
+having count(employee_id)>1)
+
+select * from departemets
+where departement_id in
+(select departement_id from empployees where em
+
+
+select * from departements
+where department_id in(select department_id
+from employees where max(salary)>7000 where employee_id in
+(select employee_id from job_histtory
+group by employee_id
+having count(employee_id)>=1)
+group by departement_id
+having max(salary)>7000);
+
+
+
+
+One very intrersting thing to understand is that please try to understand that from which table you have to find which values 
+
+for eg from employee we need salary data and  merge with department on the basis of department_id and from job history we need connt(Working years)
+and find employee_id with employee_table.
+
+Let us break it down
+
+select * from departments
+(all fields in the department_id is required)
+(we also need salary from employee as department_id is common )
+so we use in clause with to get departement_id)
+where department_id in(
+[select department_id from employees
+(now we need salary data which is present in this table and also we
+need job_history data which we need from other table so we need 
+will take employee_id coloums as common
+where employee_id in (select employee_id from employees
+group by employee_id having count(employee_id)>1)
+[ now we only need salary from the data which is available in the employee_table]
+group by department_id
+having max(Salary)>7000));
+end query
+ 
+w
+49 --
+select * from departments 
+where deprtement_id in(select department_id from employees
+group  by department_id 
+having ANY(salary)>8000;
+
+better approach will be 
+select * from departments 
+where department_id in (select department_id from employees 
+group by department_id 
+having min(salary)>8000);
+
+50 --
+From the following table, write a SQL query to find those
+ managers who supervise four or more employees. Return 
+manager name, department ID.
+
+select first_name +|| +last_name,(select employee_id from employees
+group by manager_id having count(manager_id)>=4) from employees
+
+Here you have to c.learly defined that where are the manager_id 
+and name of the peraon
+
+manager_name and department_id who have atleast 4 people working oiiit 
+
+
+select first_name || last_name ,department_id from employees
+where employee_id in(select manager_id from employee
+group by manager_id having count(employee_id)>4);
+
+
+51
+
+select * from jobs
+where job_title="Sales Representative"
+and job_id in (select job_id from job_history 
+where employee_id in (select employee_id from employees)
+
+
+Here is the correct solution
+select all departmeents from jobs coloumn
+where job_id in (selct job_id from employees
+where employee_id in (Select employee_id from job_history 
+where job_id="SA_REP"));
+
+52--
+select * from employees where
+salary =(
+select min(salary) from employees where 
+salary>(select min(salary) from employees) );
+
+;
+
+
+53 --- all the department managed by susan
+
+select * from departments where 
+department_id in (Select department_id from employees 
+where manager_id =(select employee_id from employees
+where first_name="Susan"));
+
+flow is like 
+
+get employee_id of susan
+
+
+55--
+
+find peoplem who dont have a job in past which means that we
+can find those people who belong to employeees but dont belong to job_history
+
+select * from employees
+where employee_id not in
+(select employee_id from job_history)
+
+
+
+
+
+
+
+
+
