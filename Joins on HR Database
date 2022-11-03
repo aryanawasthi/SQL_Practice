@@ -1,0 +1,264 @@
+
+
+
+10.   find employees who have or don not have a department id
+which do no have common employees
+
+which do or do not have means?
+select first_name,last_name,department_ID,department_name
+from employees
+Left OUTER JOIN 
+departments
+using department_id;
+
+11.  
+From the following table, write a SQL query to find the 
+employees and their managers. These managers do not work
+under any manager. Return the first name of the employee
+and manager.
+
+We can use LEFT OUTER JOIN on employee to get all the records of people under a
+particular manager and manager does notg work under anay manager
+
+select e.first_name,m.first_name
+from employees as e
+LEFT OUTER JOIN on MANGERS as m
+where e.employee_id=m.manager_id [Give all employees whose manager id are present or manager_id are null)
+where m.manager_id is NULL;
+
+return the name of manager and employees where managers dont work under any manaagerrs
+select e.first_name,select e.first_name from employees where employee id in  t
+from employees where employee_id in 
+(select employee_id from employees where manaager_id=0) as t
+
+Here The issue is we have to find the name of manager too.
+
+
+12.. (Easy)
+SQL code to find employees who works at same department as person with last name
+as Taylor
+select first_name,last_name,department_ID
+from employee where department_id=(select department_id from employee
+where last_name="Taylor");
+
+Using JOINS
+select first_name,last_name,department_ID
+from employee as e
+SELF JOIN employee as t
+on e.department_id=t.department_id
+where t.last_name="Taylor";
+
+
+13--
+
+select jh.job_title,d.department_name,conat(e.first_name," ",e.last_name),e.start_data
+from departments as d
+INNER JOIN jobs as j
+using j.department_id=d.department_id
+INNER JOIN job_history as jh
+on jh.employee_id=e.employee_id
+INNER JOIN jobs as j
+using jd.job_id=j.job_id
+where jd.start_date>="1993-01-01" and jd.end_date<=1997-09-31";
+
+Try to make it more elegant query and always select first table
+as one whose fields you have to use to filter.
+
+14 --
+
+
+find the maximum salary of job and the employee's salary
+return job_title,employee_name,salary_difference
+
+from job_title columns we can find max and min salary of the employees
+
+select e.job_id,e.employee_name,(j.max_salary-e.min_salary) as salary_diff
+from employees as e
+INNER JOIN jobs as j
+using job_id;
+[Here The solution used NATURAL Joins but we have selected our columns therefore we dont
+reuire new columns.
+
+
+15 --
+calculate the average salary, the number of employees receiveing commissions in that departements
+
+select d.departemnt_name,e.AVG(salary),e.count(employee_id)
+from departments as d
+INNER jOIN employees as e
+using department_id
+groub by e.deparrtment_id;
+
+[We use JOIN as we will use aggregate functions therefore we will not use subquery]
+
+16 --
+find the difference between maximum salary and salary difference of the employees in department_id=80
+
+select j.job_title,concat(e.first_name," ",e.last_name),max(e.salary)-e.salary as salary_diff
+from employees as e
+JOIN jobs as j
+using job_id
+group by e.department_id
+having e.department_id=80;
+
+17 --
+
+find department_name,city_name and country_name
+
+select d.department_name,l.city,co.country_name
+from departments as d
+INNER JOIN locations as l
+using location_id
+join countries as co
+using country_id
+
+
+18 --
+A sql query to find the name of Manager
+select concat(e.first_name," ",e.last_name) from employees 
+as e
+INNER JOIN employees as m
+where e.employee_id=m.manager_id;
+
+ERROR! Check which of these tables are avaiable
+As we have  departement_table and employees table 
+and we have to find the  full name of Manager
+
+select d.department_name,concat(e.first_name," ",e.last_name)
+from departments as d
+INNER JOIN employees as e
+on e.employee_id=d.manager_id;
+
+
+19 -- 
+Average salary of employee for each job_title
+select j.job_title,AVG(e.salary)
+from jobs as j 
+on e.job_id=j.job_id
+group by e.job_title;
+
+20 --
+write a query to find people who earn more than 12000
+Using Subquery 
+
+select e.employee_id,jd.starting_date,e.job_id,jd.end_date,e.department_id
+from employee as e ,job_history as jd
+where e.salary>12000;
+
+Using JOINS
+select e.employee_id,jd.starting_date,jd.end_date,j.job_id,e.department_id
+from employee as e
+INNER JOIN Job_history as jh
+on job_id
+where e.salary>12000;
+
+21--
+Very Important Question
+
+From the following tables, write a SQL query to find out 
+which departments have at least two employees. Group the 
+result set on country name and city. Return country name, 
+city, and num
+
+countries
+loations
+employees
+departments
+
+
+
+----Using Subqueries and join too
+select departement_name,count(department_id)
+from employees
+group by department_id
+having count>=2;
+
+select co.country_name,l.city,count(e.department_id)
+from countries as co
+INNER JOIN locations as l using (country_id)
+INNER JOIN departments as d using(location_id)
+INNER JOIN employees as e using (department_id)
+where d.departemnt_id in (select department_id from employees 
+group by department_id
+having count(department_id)>2)
+group by citym country_name;
+
+
+22..
+employees
+departments
+locations
+find the department name, full name of the manager and
+ their city
+
+selecyt d.department_name,concat(e.first_name," ",e.last_name), l.city
+from departments as d
+INNER JOIN employees as e using (department_id)
+INNER JOIN locations as l uing (location_id)
+where e.employee_id=d.manager_id;
+
+23 --
+select day differnce between 2 dates where department_id=80
+select jd.employee_id,j.job_title,DATEDIFF(day,jd.start_date,jd.end_date) as Days Worked
+from jobs_history as jd
+NATURAL JOIN jobs as j
+where jd.department_id=80;
+
+
+
+24--
+
+find name and salary of the employee who are working in the city london
+
+select concat(e.first_name," ",e.last_name),e.salary
+from locations as l
+INNER JOIN departments as d using(location_id)
+INNER JOIN employees as e using(department_id)
+wher l.city="London";
+
+25 --
+
+write a SQL query to find a full name,job_title,start and end_date of the last jobs
+employees who did not receive commissions
+Note: Here Last job of employee means the most recent job which can be found using a subquery 
+select concat(e.first_name," ",e.last_name),j.job_title,h.*
+from employees as e
+JOIN
+
+(select max(start_date),min(end_date),employee_id
+from job_history
+group by employee_id)
+on e.employee_id=h.employee_id
+join jobs on j.jon_id=e.job_id
+where e,commmission_pct=0
+
+
+select conct(e.first_name,"",e.last_name),j.job_title,jh.start_date,jh.end_date
+
+
+26 ---
+
+find departement_name, department_number and count(employee)
+
+selectt d.departement_name,d.department_id,count(e.department_id)
+from department as d
+JOIN employees as e USING (department_id)
+group by e.department_id;
+
+27 --
+SQL Query to find out the full name of the employee and id, with the  name of the country
+
+select concat(e.first_name," ",e.last_name),e.department_id,c.country_name
+from employees as e
+JOIN departments d
+using (department_id)
+JOIN locations using (location_id)
+JOIN countries using (country_id);
+
+
+
+
+
+
+
+
