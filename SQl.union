@@ -1,0 +1,195 @@
+finding the  number of salespeople and customers in the city of london
+
+ select count(salesman_id) from Salesman
+ where cit="London"
+ UNION
+ select count(customer_id) from Customer
+ where city="London"
+ Correct
+ 
+2---
+
+find distinct salespeople and their cities 
+return salesperson ID, and city
+
+select DISTINCT(salesman_id),city from Salesman
+Incorrect:
+select salesman_id,city from  Customer
+UNION
+(select salesman_id,city from salesman) 
+
+3---
+from the following table find all the customers who are involved in inventory management system
+
+find all the combinations of salesman_id and customer_id
+
+select salesman_id,customer_id
+from salesman
+UNION
+select salesman_id,customer_id
+from customer
+
+
+
+find salesman_id and Customer_id 
+what 
+
+Not able to understand the question
+
+4 --
+
+fidn all te salesperson who generated the largest and smallest orders on each date 
+return salesperson_id, name order no. highest pon/ lowest on , order_date
+
+on each date means we have to group by order_date
+
+As we can see that we have to give whether the order is lowest or highest in that order value and we have multiple columns 
+then 
+
+select s.salesman_id,s.name,o.ord_no,"HighestOn",o.ord_date
+from salesman s, Orders o
+where s.salesman_id=o.salesman_id
+and b.purch_amt=(select max(purch_amt) from Orders c
+where c.order_date=b.ord_date)
+UNION
+select s.salesman_id,s.name,o.ord_no,"LowestON",o.ord_date
+from salesman s, Orders o
+where s.salesman_id=o.salesman_id
+and b.purch_amt=(select max(purch_amt) from Orders c
+where c.order_date=b.ord_date)
+
+
+5 --
+
+find the maximum amound on each day and minimum amount on each day
+from where this mazimuim amount find order no who has this amound and on the basis on this order no find the salesman_id find the details of the employees.
+
+we have to order it on the third field which is order_no
+
+find which salesman are having maximum
+select s.salesman_id,s.name, s.ord_no,"Highest No", o.order_date
+from Salesman S,Orders as o
+where o.salesman_id=o.salesman_id
+where o.purch_amt=(select max(c.purch_amt) from Orders as c
+where c.ord_date=b.ord_date)
+UNION
+select s.salesman_id,s.name, s.ord_no,"LOWES NO", o.order_date
+from Salesman S,Orders as o
+where o.salesman_id=o.salesman_id
+where o.purch_amt=(select min(c.purch_amt) from Orders as c
+where c.ord_date=b.ord_date)
+
+ORDER By 3;
+
+
+
+
+
+6--
+
+find those salespeople who live in the same city as  their customers 
+and order it by name and if they are not present then print with the help of "NO MATCH" in the city
+
+Idea:
+salesman.id =in customer tabel salesaman id 
+salesman.city-customer.city
+
+UNION
+ADD a value as "NO MATCH" as city
+
+Rough Query
+
+select s.salesman_id,s.name,s.city,"MATCHED"
+from salesman as s
+where s.salesman_id=c.salesman_id[is thery anywhere written thate tese salesperson have customers have share same orders]
+[Therefore customer_id, salesperson_id]
+[Here we want if there are no people then we show "NO MATCH" on customer_id]
+
+
+s.city=c.city
+UNION
+select s.salesman_id,s.name,s.city,"NO_MATCHED"
+from salesman as s
+where s.salesman_id=c.salesman_id and 
+s.city!=c.city)
+
+Incorrect
+Errors It was mentiones we have to find the commission columns
+
+so our updated query is
+select s.salesman_id,s.name,s.city,s.commission
+from salesman as s,customer as c
+where s.city=c.city
+UNION
+select salesman_id,name,"NO MATCH", commission
+from salesman as s
+where s.city not in (select city from customer))
+order by  DESC;
+
+
+
+
+7 ---
+
+From the following tables, write a SQL query that appends strings to the selected fields, indicating whether the city of any salesperson is matched with the city of any customer. Return salesperson ID, name, city, MATCHED/NO MATCH.
+
+Seperate it in MATCH AND NO MATCH AND THEN COMBINE THEM ALL
+
+select s.salesman_id,s.name,s.city,"MATCHED"
+from salesman as s, customer as c
+where s.city=c.city
+UNION
+select s.salesman_id,s.name,s.city,"NOT MATCHED"
+from salesman as s, customer as c
+where s.city Not in (select city from customer))
+
+if we try to use a case statement then if 
+select s.salesman_id,s.name,s.city,case 
+when s.city=c.city then "MATCHING"
+else "NON MATCHING"
+from salesmans as s,customer as c
+
+
+8 --
+
+From the following table, write a SQL query to create a union of two queries that shows the customer id, cities, and ratings of all customers. Those with a rating of 300 or greater will have the words 'High Rating', while the others will have the words 'Low Rating'.
+
+USE WITH A CASE STATEMENT
+select customer_id,cities,case 
+when grade>300 then "High Ratings"
+else "Low Ratings"
+end as ratings
+from Customer
+
+USE WITH A UNION clause
+select customer_id,city,"High Ratings"
+from Customer as c
+where grade>=300
+UNION
+select customer_id,city, "Low Ratings"
+from Customers
+where grade<=300;
+
+
+9---
+
+From the following table, write a SQL query to find those salespersons and customers who have placed more than one order. Return ID, name
+Customer: customer_id,cust_name,city,grade, salesman_id
+salesman: salesman_id,name,city, commission
+orders: ord_no,purch_amt, ord_date, customer_id, salesman_id
+
+Innner Thought: find a set of customer id and salesperson_id
+meangs group them
+select o.customer_id,c.cust_name
+from orders as o
+group by c
+
+
+
+
+
+
+
+
+
+
