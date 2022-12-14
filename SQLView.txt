@@ -1,0 +1,258 @@
+1. Schema  -- salesman_id,name, city, commission
+
+create view salesman_neyyork
+as 
+select * from salesman
+where city="New York"
+
+2. create a view for all salesperson, return salespersonID, name  and city
+create view salesperson
+as 
+select salesman_id,name,city from salesman;
+
+
+3..From the following table, create a view to locate the salespeople in the city 'New York'
+
+create view newyork_salesman
+as 
+select * from salesman
+where city="New York"
+
+
+
+4..
+create view count as  
+select count(*) from customer
+group by (grade)
+
+5..From the following table, create a view to count the number of unique customers, compute the average and the total purchase amount of customer orders by each date.
+
+ord_no, purch_amt, ord_date, customer_id, salesman_id
+
+unique customer_id, average and total purchase amount of cutstomers ordered by order_date
+
+create view cust_average 
+as
+select count(DISTINCT(customer_id),AVG(purch_amt),sum(purch_amt)
+from customers 
+group by order_date;
+
+6--
+From the following tables, create a view to get the salesperson and customer by name. Return order name, purchase amount, salesperson ID, name, customer name
+
+-- Rough Idea 
+find customer_name,salesman_name using Join 
+create view as cust_sales_names as
+
+select o.ord_no,or.purc_amt,o.salesman_id,s.name,c.name
+from customers as c
+JOIN orders as o 
+on c.customer_id=o.customer_id
+JOIN salespersons as s
+on c.salesman_id=o.salesman_id
+
+
+-- 
+Other Query 
+select j.job_title, concat(e.first_name," ",e.last_name),d.department_name
+from employees as e
+
+JOIN jobs as j   on e.job_id=j.job_id
+join departments as d
+on e.department_id=d.department_id;
+
+Without using the Join Condition
+
+select  j.job_title, concat(e.first_name," ",e.last_name),d.department_name
+from employees as e, jobs as j ,departments as d
+where e.job_id=j.job_id and d.department_id=e.department_id;
+
+7--
+From the following table, create a view to find the salesperson who handles a customer who makes the highest order of the day. Return order date, salesperson ID, name.
+
+Rough Idea: 
+find the customer_id of the salesperson for which purch_amt is maxumum amount
+
+
+select o.order_date,s.salesman_id,s.name
+from orders as ,salesman as s
+where salesman id=
+(select salesman_id from orders
+where purch_amt =
+(select max(purch_amt) from orders));
+
+find the highest order of the day
+select max(purch_amt) from orders as o
+group by order_date
+
+---
+
+CREATE VIEW elitsalesman
+AS SELECT b.ord_date, a.salesman_id, a.name
+FROM salesman a, orders b
+WHERE a.salesman_id = b.salesman_id
+AND b.purch_amt =
+    (SELECT MAX (purch_amt)
+       FROM orders c
+       WHERE c.ord_date = b.ord_date);
+    
+ select salesman_id,salesman_name,orders.order_date
+ from orders as o , salesman as s 
+ where s.salesman_id =o.salesman_id 
+ where o.purch_amt=  
+ (select max(purch_amt) from orders 
+ group by order_date)
+ 
+ # issue is we can have same maximum amount on multiple days then how we can say that  it will be the maximum on that date.
+so we fixes issue by using an where condition
+
+select s.salesman_id,s.name,o.order_date
+ from orders as o , salesman as s 
+ where s.salesman_id =o.salesman_id 
+ where o.purch_amt= (select max(purch_amt) from orders as oo 
+ where oo.order_date=o.order_date
+ 
+ Practice on SQL
+ 
+customers and orders
+I try to find the name and customer no and date of the maximum orders.
+
+select p.paymentDate,c.customerNumber,c.customerName
+from payments as p, customers as c
+where p.customerNumber=p.customerNumber
+and p.amount=(select max(amount) from payments as pp
+group by paymentDate
+having pp.paymentDate=p.paymentDate);
+13.03 Seconds
+select p.paymentDate,c.customerNumber,c.customerName
+from payments as p, customers as c
+where p.customerNumber=p.customerNumber
+and p.amount=(select max(amount) from payments as pp
+where pp.payementDate=p.paymentDate)
+;
+3.03 Seconds
+
+
+8. 
+ From the following table, create a view to find the salesperson who deals with the customer with the highest order at least three times per day. Return salesperson ID and name. 
+ 
+ Given Customers & ElitesMan View
+ Customers Schema --[id,name,city,grade,commission]
+ elitsalesman --[ salesman_id,name,city,commission]
+ 
+ select e.salesperson_id,e.salesman_name from 
+ elitsalespman as e
+ group by salesman_id
+ having count(*)>3;
+ 
+ 
+
+
+CREATE VIEW elitsalesman
+AS SELECT b.ord_date, a.salesman_id, a.name
+FROM salesman a, orders b
+WHERE a.salesman_id = b.salesman_id
+AND b.purch_amt =
+    (SELECT MAX (purch_amt)
+       FROM orders c
+       WHERE c.ord_date = b.ord_date);
+       
+       
+10. From the following table, create a view to count the number of salespeople in each city. Return city, number of salespersons. 
+
+
+find city and count of salesperson
+create view salesperson as 
+select city,count(salesman_id) from salesman
+group  by city;
+
+11.From the following table, create a view to compute the average purchase amount and total purchase amount for each salesperson. Return name, average purchase and total purchase amount. (Assume all names are unique.).
+create view saleman_report as 
+select s.name,AVG(o.purch_amt),sum(o.purch_amt)
+from orders as o
+join salesman as s
+on o.salesman_id=s.salesman_id
+group by (o.salesman_id);
+
+12.From the following table, create a view to identify salespeople who work with multiple clients. Return all the fields of salesperson.
+
+INNER IDEA
+count(salesman_id)>2
+Tables Available : Salesman, Customer
+create view mult_cust_salesperosn as
+
+select * from salesman
+where salesman_id in
+(select salesman_id from customer_id
+group by (salesman_id)
+having count(salesman_id)>1)
+ 
+
+13. From the following table, create a view that shows all matching customers with salespeople, ensuring that at least one customer in the city of the customer is served by the salesperson in the city of the salesperson.
+
+Inner Idea:
+customer with city of salespeople>=1
+ 
+select c.city,s.city
+from salesperson as s ,customers as c
+where s.salesman_id=c.salesman_id
+group by (salesman_id)
+having count(salesman_id)>=1
+and s.city=c.city
+
+13.. 
+ From the following table, create a view that shows all matching customers with salespeople, ensuring that at least one customer in the city of the customer is served by the salesperson in the city of the salesperson.
+ 
+ select s.city,c.city
+ from salesman as s, customers as c
+ where s.saleman_id=c.salesman_id
+ and s.city=c.city;
+ 
+13 ..
+From the following table, create a view that shows all matching customers with salespeople, ensuring that at least one customer in the city of the customer is served by the salesperson in the city of the salesperson.
+
+one customer in the city is served by one of the salesperson in the city
+create view citymatch(custcity,salescity) 
+as 
+select Distinct c.city,s.city from
+salesman as s,customers as c
+where c.salesman_id=s.salesman_id
+
+14 ---
+From the following table, create a view to display the number of orders per day. Return order date and number of orders.
+
+
+create view daily_orders
+as
+select order_date,count(*)
+from orders
+group by ord_date
+
+15 --
+
+From the following table, create a view to find the salespeople who placed orders on October 10th, 2012. Return all the fields of salesperson.
+
+create view orders_october
+as
+select * from salesman
+where salesman_id in (select salesman_id from orders 
+where ord_date="2012-10-10");
+
+16 --
+From the following table, create a view to find the salespersons who issued orders on either August 17th, 2012 or October 10th, 2012. Return salesperson ID, order number and customer ID.
+
+create view sales_10_October
+select saleman_id,ord_no,customer_id
+from orders
+where ord_date in ("2012-08-17","2012-10-10")
+
+
+
+
+
+
+
+
+
+
+
